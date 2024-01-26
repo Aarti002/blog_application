@@ -15,11 +15,13 @@ public class UserController {
 
     private final UserRepository userRepo;
     private final BlogRepository blogRepo;
+    private final CommentsRepository commentRepo;
 
     @Autowired
-    public UserController(UserRepository userRepository, BlogRepository blogRepository) {
+    public UserController(UserRepository userRepository, BlogRepository blogRepository, CommentsRepository commentRepository) {
         this.userRepo = userRepository;
-        this.blogRepo=blogRepository;
+        this.blogRepo= blogRepository;
+        this.commentRepo= commentRepository;
     }
 
     @GetMapping("/allUsers")
@@ -70,9 +72,13 @@ public class UserController {
   	  }
   	  else {
   		  List<Blog> blogs=blogRepo.findByUserId(user.getId());
+  		  List<Comments> comments=commentRepo.findByUserId(user.getId());
   		  for(Blog blog:blogs) {
   			  blogRepo.delete(blog);
-  			  }
+  		  }
+  		  for(Comments comment:comments) {
+			  commentRepo.delete(comment);
+		  }
   	  }
   	  userRepo.deleteById(id);
   	  return "Successfully Deleted!";

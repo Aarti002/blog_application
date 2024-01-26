@@ -1,6 +1,7 @@
 package com.example.demo.model;
 
 import jakarta.persistence.*;
+import java.util.*;
 
 
 @Entity
@@ -19,15 +20,21 @@ public class Blog {
     @ManyToOne
     @JoinColumn(name = "user_id",nullable=false)
     private User user;
+    
+    @ElementCollection(targetClass = Tags.class)
+    @CollectionTable(name = "blog_tags", joinColumns = @JoinColumn(name = "blog_id"))
+    @Enumerated(EnumType.STRING)
+    private Set<Tags> tags;
 
     public Blog() {
 
     }
 
-    public Blog(String title, String content, User user) {
+    public Blog(String title, String content, User user, Set<Tags> tags) {
         this.title = title;
         this.content = content;
         this.user=user;
+        this.tags=tags;
     }
 
     public int getId() {
@@ -53,5 +60,11 @@ public class Blog {
     }
     public User getUser() {
     	return user;
+    }
+    public void setTags(Set<Tags> allTags) {
+    	this.tags=allTags;
+    }
+    public Set<Tags> getTags(){
+    	return tags;
     }
 }
